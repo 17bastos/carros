@@ -1,3 +1,9 @@
+import 'package:carros/pages/api_response.dart';
+import 'package:carros/pages/home_page.dart';
+import 'package:carros/pages/login_api.dart';
+import 'package:carros/pages/usuario.dart';
+import 'package:carros/utils/alert.dart';
+import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/app_button.dart';
 import 'package:carros/widgets/app_field.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +15,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _tLogin = TextEditingController();
-
   final _tSenha = TextEditingController();
-
   final _focusSenha = FocusNode();
-
   var _formKey = GlobalKey<FormState>();
+  bool _showProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             AppButton(
               "Login",
+              showProgress: _showProgress,
               onPressed: _onClickLogin,
             )
           ],
@@ -63,17 +68,34 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _onClickLogin() {
+  _onClickLogin() async {
     var formOk = _formKey.currentState.validate();
 
     if (!formOk) {
       return;
     }
 
+    setState(() {
+      _showProgress = true;
+    });
+
     String login = _tLogin.text;
     String senha = _tSenha.text;
-    print(login);
-    print(senha);
+
+    ApiResponse response = await LoginApi.login(login, senha);
+
+    if (response.ok) {
+      Usuario user = response.result;
+      print(user);
+      push(context, HomePage());
+    } else {
+      alert(context, response.msg);
+    }
+
+
+    setState(() {
+      _showProgress = false;
+    });
   }
 
   String _validateLogin(String text) {

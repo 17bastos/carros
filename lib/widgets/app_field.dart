@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AppField extends StatelessWidget {
-  @override
-  String label;
-  String hint;
-  bool obscureText;
-  TextEditingController controller;
-  FormFieldValidator<String> validator;
-  TextInputType keyBoardType;
-  TextInputAction textInputAction;
-  FocusNode focusNode;
-  FocusNode nextFocus;
+  final String label;
+  final String hint;
+  final bool obscureText;
+  final TextEditingController controller;
+  final FormFieldValidator<String> validator;
+  final TextInputType keyBoardType;
+  final TextInputAction textInputAction;
+  final FocusNode focusNode;
+  final FocusNode nextFocus;
 
   Widget build(BuildContext context) {
     return TextFormField(
