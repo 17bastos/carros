@@ -52,6 +52,16 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
                     child: Image.network(
                       c.urlFoto,
                       width: 250,
+                      loadingBuilder: (BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null ?
+                            loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                                : null,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   Text(
@@ -66,19 +76,19 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  ButtonTheme.bar(
-                      child: ButtonBar(
+                      ButtonBar(
                           children: <Widget>[
                             FlatButton(
+                              color: Colors.blue,
                               child: const Text('Detalhes'),
                               onPressed: () {},
                             ),FlatButton(
+                              color: Colors.blue,
                               child: const Text('Share'),
                               onPressed: () {},
                             ),
                           ]
                       )
-                  )
                 ],
               ),
             ),
