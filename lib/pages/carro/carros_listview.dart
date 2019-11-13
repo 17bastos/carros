@@ -24,6 +24,18 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
     return FutureBuilder(
       future: future,
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              "Não foi possível buscar os carros",
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 22,
+              ),
+            ),
+          );
+        }
+
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator(),);
         }

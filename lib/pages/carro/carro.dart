@@ -23,7 +23,7 @@ class Carro {
     nome = json['nome'];
     tipo = json['tipo'];
     descricao = json['descricao'];
-    urlFoto = json['urlFoto'];
+    urlFoto = json['urlFoto'] != null ? json['urlFoto'] : "";
     urlVideo = json['urlVideo'];
     latitude = json['latitude'];
     longitude = json['longitude'];

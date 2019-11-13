@@ -21,6 +21,17 @@ class _LoginPageState extends State<LoginPage> {
   bool _showProgress = false;
 
   @override
+  void initState() {
+    super.initState();
+    Future<Usuario> future = Usuario.get();
+    future.then((Usuario user) {
+      if (user != null) {
+        push(context, HomePage(), replace: true);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -52,8 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                 keyBoardType: TextInputType.number,
                 validator: _validateSenha,
                 obscureText: true,
-                focusNode: _focusSenha
-            ),
+                focusNode: _focusSenha),
             SizedBox(
               height: 20,
             ),
@@ -91,7 +101,6 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       alert(context, response.msg);
     }
-
 
     setState(() {
       _showProgress = false;

@@ -1,10 +1,8 @@
-import 'package:carros/pages/carro/carros_api.dart';
 import 'package:carros/pages/carro/carros_listview.dart';
+import 'package:carros/utils/prefs.dart';
 import 'package:carros/widgets/drawer-list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'carro.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,14 +10,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin<HomePage> {
+
+  TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _initTabs();
+  }
+
+  _initTabs() async {
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.index = await Prefs.getInt("tabIdx");
+
+    _tabController.addListener((){
+      Prefs.setInt("tabIdx", _tabController.index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
+    return
+      Scaffold(
         appBar: AppBar(
           title: Text("Carros"),
           bottom: TabBar(
+            controller: _tabController,
             tabs: <Widget>[
               Tab(text: "Clássicos",),
               Tab(text: "Esportivos",),
@@ -28,6 +44,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ),
         ),
         body: TabBarView(
+          controller: _tabController,
           children: <Widget>[
             CarrosListView("classicos"),
             CarrosListView("esportivos"),
@@ -35,7 +52,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ],
         ),
         drawer: DrawerList(),
-      ),
-    );
+      );
   }
 }
