@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:carros/pages/carro/carro_page.dart';
-import 'package:carros/pages/carro/carros_bloc.dart';
 import 'package:carros/utils/nav.dart';
-import 'package:carros/widgets/text_error.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'carro.dart';
 import 'carros_api.dart';
@@ -30,21 +29,10 @@ class CarrosListView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Center(
-                    child: Image.network(
-                      c.urlFoto,
-                      width: 250,
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes
-                                : null,
-                          ),
-                        );
-                      },
+                    child: CachedNetworkImage(
+                      imageUrl: c.urlFoto,
+                      placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                   Text(
