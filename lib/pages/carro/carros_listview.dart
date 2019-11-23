@@ -1,29 +1,45 @@
+import 'dart:async';
+
+import 'package:carros/pages/carro/carro_page.dart';
+import 'package:carros/utils/nav.dart';
 import 'package:flutter/material.dart';
 
 import 'carro.dart';
 import 'carros_api.dart';
 
 class CarrosListView extends StatefulWidget {
-
   String tipo;
+
   CarrosListView(this.tipo);
 
   @override
   _CarrosListViewState createState() => _CarrosListViewState();
 }
 
-class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAliveClientMixin<CarrosListView>{
+class _CarrosListViewState extends State<CarrosListView>
+    with AutomaticKeepAliveClientMixin<CarrosListView> {
+  List<Carro> carros;
+  final _streamController = StreamController<List<Carro>>();
+
   @override
-  Widget build(BuildContext context) {
-    return _body();
+  void initState() {
+    super.initState();
+    _loadData();
   }
 
-  _body() {
-    Future<List<Carro>> future = CarrosApi.getCarros(widget.tipo);
+  _loadData() async {
+    List<Carro> carros = await CarrosApi.getCarros(widget.tipo);
+    _streamController.add(carros);
+  }
 
-    return FutureBuilder(
-      future: future,
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    return StreamBuilder(
+      stream: _streamController.stream,
       builder: (context, snapshot) {
+
         if (snapshot.hasError) {
           return Center(
             child: Text(
@@ -37,11 +53,12 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
         }
 
         if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator(),);
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         }
 
-        List<Carro> carros = snapshot.data;
-        return _ListViewCarros(carros);
+        return _ListViewCarros(snapshot.data);
       },
     );
   }
@@ -64,12 +81,14 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
                     child: Image.network(
                       c.urlFoto,
                       width: 250,
-                      loadingBuilder: (BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Center(
                           child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null ?
-                            loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
                                 : null,
                           ),
                         );
@@ -88,19 +107,18 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                      ButtonBar(
-                          children: <Widget>[
-                            FlatButton(
-                              color: Colors.blue,
-                              child: const Text('Detalhes'),
-                              onPressed: () {},
-                            ),FlatButton(
-                              color: Colors.blue,
-                              child: const Text('Share'),
-                              onPressed: () {},
-                            ),
-                          ]
-                      )
+                  ButtonBar(children: <Widget>[
+                    FlatButton(
+                      color: Colors.blue,
+                      child: const Text('Detalhes'),
+                      onPressed: () => _onClickCarro(c),
+                    ),
+                    FlatButton(
+                      color: Colors.blue,
+                      child: const Text('Share'),
+                      onPressed: () => _onClickCarro(c),
+                    ),
+                  ])
                 ],
               ),
             ),
@@ -112,4 +130,13 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
 
   @override
   bool get wantKeepAlive => true;
+
+  _onClickCarro(Carro c) {
+    push(context, CarroPage(c));
+  }
+
+  @override
+  dispose() {
+    _streamController.close();
+  }
 }
