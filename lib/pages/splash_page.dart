@@ -1,5 +1,5 @@
 import 'package:carros/pages/carro/home_page.dart';
-import 'package:carros/pages/favoritos/db-helper.dart';
+import 'package:carros/utils/sql/db_helper.dart';
 import 'package:carros/pages/login/login_page.dart';
 import 'package:carros/pages/login/usuario.dart';
 import 'package:carros/utils/nav.dart';
@@ -15,11 +15,12 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
 
+    // Inicializar o banco de dados
+    Future futureBd = DatabaseHelper.getInstance().db;
+
     // Verifica usuário logado
     Future<Usuario> futureUsuario = Usuario.get();
 
-    // Inicializar o banco de dados
-    Future futureBd = DatabaseHelper.getInstance().db;
     Future.wait([futureBd, futureUsuario]).then((List values) {
       Usuario user = values[1];
 

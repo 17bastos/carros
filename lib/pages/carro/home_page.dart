@@ -1,5 +1,6 @@
 import 'package:carros/pages/carro/carros_listview.dart';
 import 'package:carros/pages/carro/carros_page.dart';
+import 'package:carros/pages/favoritos/favoritos_page.dart';
 import 'package:carros/utils/prefs.dart';
 import 'package:carros/widgets/drawer-list.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,7 +22,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   _initTabs() async {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.index = await Prefs.getInt("tabIdx");
 
     _tabController.addListener((){
@@ -38,9 +39,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           bottom: TabBar(
             controller: _tabController,
             tabs: <Widget>[
-              Tab(text: "Clássicos",),
-              Tab(text: "Esportivos",),
-              Tab(text: "Luxo",),
+              Tab(text: "Clássicos", icon: Icon(Icons.directions_car),),
+              Tab(text: "Esportivos", icon: Icon(Icons.directions_car),),
+              Tab(text: "Luxo", icon: Icon(Icons.directions_car),),
+              Tab(text: "Favoritos", icon: Icon(Icons.favorite),),
             ],
           ),
         ),
@@ -49,7 +51,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           children: <Widget>[
             CarrosPage("classicos"),
             CarrosPage("esportivos"),
-            CarrosPage("luxo")
+            CarrosPage("luxo"),
+            FavoritosPage()
           ],
         ),
         drawer: DrawerList(),
