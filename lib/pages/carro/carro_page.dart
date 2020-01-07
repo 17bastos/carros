@@ -1,8 +1,13 @@
+import 'package:carros/pages/carro/carro-form-page.dart';
 import 'package:carros/pages/favoritos/favorito_service.dart';
+import 'package:carros/utils/alert.dart';
+import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/text.dart';
 import 'package:flutter/material.dart';
 
+import '../api_response.dart';
 import 'carro.dart';
+import 'carros_api.dart';
 
 class CarroPage extends StatefulWidget {
   Carro carro;
@@ -78,10 +83,10 @@ class _CarroPageState extends State<CarroPage> {
   _onClickPopupMenu(String value) {
     switch (value) {
       case "Editar":
-        print("Editar!!!");
+        push(context, CarroFormPage(carro: carro));
         break;
       case "Deletar":
-        print("Deletar!!!");
+        deletar();
         break;
       case "Share":
         print("Share!!!");
@@ -144,5 +149,17 @@ class _CarroPageState extends State<CarroPage> {
     setState(() {
       color = favorito ? Colors.red : Colors.grey;
     });
+  }
+
+  void deletar() async {
+    ApiResponse<bool> response = await CarrosApi.delete(               carro);
+
+    if(response.ok) {
+      alert(context, "Carro excluído com sucesso!", callback: (){
+        Navigator.pop(context);
+      });
+    } else {
+      alert(context, response.msg);
+    }
   }
 }

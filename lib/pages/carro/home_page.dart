@@ -1,6 +1,9 @@
+import 'package:carros/pages/carro/carro-form-page.dart';
 import 'package:carros/pages/carro/carros_listview.dart';
 import 'package:carros/pages/carro/carros_page.dart';
 import 'package:carros/pages/favoritos/favoritos_page.dart';
+import 'package:carros/utils/alert.dart';
+import 'package:carros/utils/nav.dart';
 import 'package:carros/utils/prefs.dart';
 import 'package:carros/widgets/drawer-list.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,6 +59,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ],
         ),
         drawer: DrawerList(),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: _onClickAdicionarCarro,
+        ),
       );
+  }
+
+  void _onClickAdicionarCarro() {
+    push(context, CarroFormPage());
   }
 }
