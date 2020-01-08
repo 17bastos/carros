@@ -1,5 +1,7 @@
 import 'dart:convert' as convert;
+import 'dart:io';
 import 'package:carros/pages/api_response.dart';
+import 'package:carros/pages/carro/upload_api.dart';
 
 import 'carro.dart';
 import 'package:carros/utils/http_helper.dart' as http;
@@ -21,7 +23,15 @@ class CarrosApi {
     }
   }
 
-  static Future<ApiResponse<bool>> save(Carro c) async {
+  static Future<ApiResponse<bool>> save(Carro c, File file) async {
+
+    if (file != null) {
+      final response = await UploadApi.upload(file);
+      if(response.ok) {
+        c.urlFoto = response.result;
+      }
+    }
+
     var url = 'http://carros-springboot.herokuapp.com/api/v2/carros';
     if(c.id != null) {
       url += "/${c.id}";
