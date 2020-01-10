@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carros/utils/alert.dart';
+import 'package:carros/utils/event_bus.dart';
 import 'package:carros/widgets/app_button.dart';
 import 'package:carros/widgets/app_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -222,6 +223,7 @@ class _CarroFormPageState extends State<CarroFormPage> {
     ApiResponse<bool> response = await CarrosApi.save(c, _file);
 
     if(response.ok) {
+      EventBus.get(context).senEvent(CarroEvent("carro_salvo", c.tipo));
       alert(context, "Carro salvo com sucesso!", callback: (){
         Navigator.pop(context);
       });

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'carro.dart';
-import 'carros_api.dart';
 
 class CarrosListView extends StatelessWidget {
   List<Carro> carros;

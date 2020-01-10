@@ -1,6 +1,7 @@
 import 'package:carros/pages/carro/carro-form-page.dart';
 import 'package:carros/pages/favoritos/favorito_service.dart';
 import 'package:carros/utils/alert.dart';
+import 'package:carros/utils/event_bus.dart';
 import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -152,9 +153,10 @@ class _CarroPageState extends State<CarroPage> {
   }
 
   void deletar() async {
-    ApiResponse<bool> response = await CarrosApi.delete(               carro);
+    ApiResponse<bool> response = await CarrosApi.delete(carro);
 
     if(response.ok) {
+      EventBus.get(context).senEvent(CarroEvent("carro_deletado", carro.tipo));
       alert(context, "Carro excluído com sucesso!", callback: (){
         Navigator.pop(context);
       });

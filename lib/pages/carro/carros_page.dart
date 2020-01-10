@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:carros/pages/carro/carros_bloc.dart';
 import 'package:carros/pages/carro/carros_listview.dart';
+import 'package:carros/utils/event_bus.dart';
 import 'package:carros/widgets/text_error.dart';
 import 'package:flutter/material.dart';
 
@@ -21,10 +22,21 @@ class _CarrosPageState extends State<CarrosPage>
   List<Carro> carros;
   final _bloc = CarrosBloc();
 
+  StreamSubscription<Event> subscription;
+
   @override
   void initState() {
     super.initState();
     _bloc.fetch(widget.tipo);
+
+    final bus = EventBus.get(context);
+    subscription = bus.stream.listen((Event e) {
+      print("Event $e");
+      CarroEvent carroEvent = e;
+      if(carroEvent.tipo == widget.tipo) {
+        _bloc.fetch(widget.tipo);
+      }
+    });
   }
 
   @override
@@ -58,6 +70,7 @@ class _CarrosPageState extends State<CarrosPage>
   dispose() {
     super.dispose();
     _bloc.dispose();
+    subscription.cancel();
   }
 
   Future<void> _onRefresh() {
