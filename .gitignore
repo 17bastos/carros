@@ -385,3 +385,8 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.gitignore.io/api/xcode,swift,kotlin,flutter,androidstudio
+ios/Flutter/Flutter.podspec
+ios/Podfile.lock
+ios/Runner.xcodeproj/project.pbxproj
+ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+pubspec.lock
