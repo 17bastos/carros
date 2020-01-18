@@ -1,12 +1,16 @@
 import 'package:carros/pages/carro/carro-form-page.dart';
 import 'package:carros/pages/favoritos/favorito_service.dart';
+import 'package:carros/pages/video_page.dart';
 import 'package:carros/utils/alert.dart';
 import 'package:carros/utils/event_bus.dart';
 import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 
 import '../api_response.dart';
+import '../mapa_page.dart';
 import 'carro.dart';
 import 'carros_api.dart';
 
@@ -19,7 +23,6 @@ class CarroPage extends StatefulWidget {
 }
 
 class _CarroPageState extends State<CarroPage> {
-
   @override
   void initState() {
     super.initState();
@@ -28,7 +31,6 @@ class _CarroPageState extends State<CarroPage> {
         color = favorito ? Colors.red : Colors.grey;
       });
     });
-
   }
 
   Color color = Colors.grey;
@@ -40,9 +42,17 @@ class _CarroPageState extends State<CarroPage> {
       appBar: AppBar(
         title: Text(widget.carro.nome),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.place)),
+          IconButton(
+            icon: Icon(Icons.place),
+            onPressed: () {
+              _onClickMapa(context);
+            },
+          ),
           IconButton(
             icon: Icon(Icons.videocam),
+            onPressed: () {
+              _onClickVideoVideoPlayer(context);
+            },
           ),
           PopupMenuButton<String>(
               onSelected: (String value) => _onClickPopupMenu(value),
@@ -155,13 +165,40 @@ class _CarroPageState extends State<CarroPage> {
   void deletar() async {
     ApiResponse<bool> response = await CarrosApi.delete(carro);
 
-    if(response.ok) {
+    if (response.ok) {
       EventBus.get(context).senEvent(CarroEvent("carro_deletado", carro.tipo));
-      alert(context, "Carro excluído com sucesso!", callback: (){
+      alert(context, "Carro excluído com sucesso!", callback: () {
         Navigator.pop(context);
       });
     } else {
       alert(context, response.msg);
+    }
+  }
+
+  _onClickVideoUrlLauncher(BuildContext context) {
+    if (carro.urlVideo != null && carro.urlVideo.isNotEmpty) {
+      launch(carro.urlVideo);
+    } else {
+      alert(context, "O carro não possui vídeo");
+    }
+  }
+
+  _onClickVideoVideoPlayer(BuildContext context) {
+    if (carro.urlVideo != null && carro.urlVideo.isNotEmpty) {
+      push(context, VideoPage(carro));
+    } else {
+      alert(context, "O carro não possui vídeo");
+    }
+  }
+
+  _onClickMapa(BuildContext context) {
+    if (carro.latitude != null &&
+        carro.latitude.isNotEmpty &&
+        carro.longitude != null &&
+        carro.longitude.isNotEmpty) {
+      push(context, MapaPage(carro));
+    } else {
+      alert(context, "O carro não possui lat/long cadastrada");
     }
   }
 }
