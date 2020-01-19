@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class LoginApi {
   static Future<ApiResponse<Usuario>> login(String login, String senha) async {
     try {
-      var url = 'http://carros-springboot.herokuapp.com/api/v2/login';
+      var url = 'http://carros-springboot.herokuapp.com/api/v1/login';
 
       final params = {"username": login, "password": senha};
 
@@ -21,13 +21,13 @@ class LoginApi {
       if (response.statusCode == 200) {
         final user = Usuario.fromJson(mapResponse);
         user.save();
-        return ApiResponse.ok(user);
+        return ApiResponse.ok(result: user);
       } else {
-        return ApiResponse.error(mapResponse["error"]);
+        return ApiResponse.error(msg: mapResponse["error"]);
       }
     } catch (error, exception) {
       print("Erro no login $error > $exception");
-      return ApiResponse.error("Não foi possível realizar o login");
+      return ApiResponse.error(msg: "Não foi possível realizar o login");
     }
   }
 }
