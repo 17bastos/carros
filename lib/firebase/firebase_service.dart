@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:carros/pages/api_response.dart';
 import 'package:carros/pages/login/usuario.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart' as path;
 
 class FirebaseService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -109,5 +113,15 @@ class FirebaseService {
   Future<void> logout() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
+  }
+
+  static Future<String> uploadFirebaseStorage(File file) async {
+
+    String fileName = path.basename(file.path);
+    final storageRef = FirebaseStorage.instance.ref().child(fileName);
+
+    final StorageTaskSnapshot task = await storageRef.putFile(file).onComplete;
+    final String urlFoto = await task.ref.getDownloadURL();
+    return urlFoto;
   }
 }

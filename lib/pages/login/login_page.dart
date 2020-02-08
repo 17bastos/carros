@@ -2,6 +2,7 @@ import 'package:carros/firebase/firebase_service.dart';
 import 'package:carros/pages/api_response.dart';
 import 'package:carros/pages/cadastro/cadastro_page.dart';
 import 'package:carros/pages/carro/home_page.dart';
+import 'package:carros/widgets/firebase.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:carros/pages/login/login_bloc.dart';
 import 'package:carros/pages/login/usuario.dart';
@@ -10,6 +11,7 @@ import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/app_button.dart';
 import 'package:carros/widgets/app_field.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -27,7 +29,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-
+    initFcm();
+    RemoteConfig.instance.then((remoteConfig) {
+      remoteConfig.fetch(expiration: const Duration(hours: 5));
+      remoteConfig.activateFetched();
+      print('welcome message: ' + remoteConfig.getString('mensagem'));
+    });
   }
 
   @override

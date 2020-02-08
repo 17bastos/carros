@@ -7,7 +7,6 @@ import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:video_player/video_player.dart';
 
 import '../api_response.dart';
 import '../mapa_page.dart';
@@ -26,7 +25,7 @@ class _CarroPageState extends State<CarroPage> {
   @override
   void initState() {
     super.initState();
-    FavoritoService.isFavorio(carro).then((bool favorito) {
+    FavoritoService().isFavorito(carro).then((bool favorito) {
       setState(() {
         color = favorito ? Colors.red : Colors.grey;
       });
@@ -155,7 +154,7 @@ class _CarroPageState extends State<CarroPage> {
   }
 
   void _onClickFavorito() async {
-    bool favorito = await FavoritoService.favoritar(context, widget.carro);
+    bool favorito = await FavoritoService().favoritar(context, widget.carro);
 
     setState(() {
       color = favorito ? Colors.red : Colors.grey;
